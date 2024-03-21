@@ -53,16 +53,23 @@ app.use(function(err, req, res, next) {
 /* BEGIN db initialization */
 const Sequelize = require("./db.connection");
 const connection = Sequelize.connection;
+
+
 /* END db initialization */
 
 /* Synchronize database and add relationships */
 const User = require("./models/user.model.js")(connection, Sequelize.library);
 const Session = require("./models/session.model.js")(connection, Sequelize.library);
+const Location = require("./models/location.model.js")(connection, Sequelize.library);
+const Rating = require("./models/rating.model.js")(connection, Sequelize.library);
 
 User.sync({force: false}, {alter: true});
 Session.sync({ force: false, alter: true });
+Location.sync({force: false}, {alter: true});
+Rating.sync({ force: false, alter: true });
 
-
-Session.belongsTo(User, {as: "user", foreignKey: "Id_Person", onDelete: 'cascade'});
+Rating.belongsTo(Location, {as: "location", foreignKey: "id_location", onDelete: 'cascade'});
+Location.belongsTo(User, {as: "user", foreignKey: "id_user", onDelete: 'cascade'});
+Session.belongsTo(User, {as: "user", foreignKey: "id_user", onDelete: 'cascade'});
 
 module.exports = app;

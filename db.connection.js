@@ -5,9 +5,9 @@ const connection = new Sequelize (dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD,
     host: dbConfig.HOST,
     dialect: dbConfig.dialect,
     dialectOptions: {
-        ssl: {
+        ssl: process.env.NODE_ENV === 'development' ? false : {
           require: true,
-          rejectUnauthorized: false,
+          rejectUnauthorized: true,
         },
       },
     pool :{
