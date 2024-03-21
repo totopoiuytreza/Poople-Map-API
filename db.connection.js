@@ -9,7 +9,7 @@ const connection = new Sequelize (dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD,
           require: true,
           rejectUnauthorized: false,
         },
-    },
+      },
     pool :{
         max: dbConfig.pool.max,
         min: dbConfig.pool.min,

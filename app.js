@@ -3,47 +3,66 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var bodyParser = require('body-parser');
+var cors = require('cors');
+require('dotenv').config();
 
+
+/* Initialize all router */
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-
-var cors = require('cors')
 
 var app = express();
-const PORT = process.env.PORT || 5555;
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
+
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+
 app.use(cors({
-    "origin": process.env.FRONT_DOMAIN_NAME,
-    "methods": "GET,PATCH,POST,PUT,DELETE,OPTIONS",
-    "allowedHeaders": "X-Requested-With,Content-Type,Authorization",
-}))
+  origin: '*'
+}));
 
-app.listen(PORT, (error) =>{
-  if(!error)
-      console.log("Server is Successfully Running, and App is listening on port "+ PORT)
-  else 
-      console.log("Error occurred, server can't start", error);
-  }
-);
+app.listen(3001, () => {
+  console.log("Example app listening at port 3001!");
 
+})
+
+/* Use all router */
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  next(createError(404));
+});
+
+// error handler
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+});
 
 /* BEGIN db initialization */
-const Sequelize = require('./db.connection');
+const Sequelize = require("./db.connection");
 const connection = Sequelize.connection;
 /* END db initialization */
 
+/* Synchronize database and add relationships */
+const User = require("./models/user.model.js")(connection, Sequelize.library);
+const Session = require("./models/session.model.js")(connection, Sequelize.library);
 
-try{ 
-  connection.authenticate()
-}
-catch(error){
-  console.log("Unable to connect to the database:", error);
-}
+User.sync({force: false}, {alter: true});
+Session.sync({ force: false, alter: true });
 
+
+Session.belongsTo(User, {as: "user", foreignKey: "Id_Person", onDelete: 'cascade'});
 
 module.exports = app;
