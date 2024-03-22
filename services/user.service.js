@@ -1,6 +1,6 @@
 const Sequelize = require("../db.connection");
 const User = require("../models/user.model.js")(Sequelize.connection, Sequelize.library);
-const sessions = require("./session.js");
+const sessions = require("./session.service.js");
 const Crypto = require("crypto");
 
 exports.getUser = async (req, res) => {

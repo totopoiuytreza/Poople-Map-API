@@ -1,7 +1,7 @@
 const Sequelize = require("../db.connection");
 const Location = require("../models/location.model.js")(Sequelize.connection, Sequelize.library);
 const Rating = require("../models/rating.model.js")(Sequelize.connection, Sequelize.library);
-const sessions = require("./session.js");
+const sessions = require("./session.service.js");
 const Crypto = require("crypto");
 
 exports.addRating = async (req, res) => {
@@ -29,8 +29,8 @@ exports.addRating = async (req, res) => {
         } else {
             let newRating = await Rating.create({
                 id_location: location.id_location,
-                rating: req.body.rating,
-                comment: req.body.comment
+                rating_score: req.body.rating_score,
+                comments: req.body.comments
             });
             res.status(200).send(newRating);
         }
@@ -49,15 +49,9 @@ exports.getRating = async (req, res) => {
 		res.status(401).send({ message: "Unauthorized" });
 	} else {
 		// Get User Id
-		
-		let location = await Location.findOne({
-            where: {
-                id_location: req.params.id_location
-            }
-        });
         let rating = await Rating.findOne({
             where: {
-                id_location: location.id_location
+                id_rating: req.params.id_rating
             }
         });
 		res.status(200).send(rating);
@@ -74,14 +68,9 @@ exports.patchRating = async (req, res) => {
 	if (!session) {
 		res.status(401).send({ message: "Unauthorized" });
 	} else {
-		let location = await Location.findOne({
-            where: {
-                id_location: req.params.id_location
-            }
-        });
         let rating = await Rating.findOne({
             where: {
-                id_location: location.id_location
+                id_rating: req.params.id_rating
             }
         });
         for(var key in req.body){

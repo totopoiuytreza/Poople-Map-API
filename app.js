@@ -8,7 +8,10 @@ require('dotenv').config();
 
 
 /* Initialize all router */
-var indexRouter = require('./routes/auth');
+var userRouter = require('./routes/user');
+var locationRouter = require('./routes/location');
+var ratingRouter = require('./routes/rating');
+var authRouter = require('./routes/auth');
 
 var app = express();
 
@@ -32,12 +35,13 @@ app.listen(3001, () => {
 })
 
 /* Use all router */
-app.use('/', indexRouter);
+app.use('/user', userRouter);
+app.use('/location', locationRouter);
+app.use('/rating', ratingRouter);
+app.use('/auth', authRouter);
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
-});
+
+app.get('/', (req, res) => { return res.send('Hello! Welome to the Poople-map API !') })
 
 // error handler
 app.use(function(err, req, res, next) {

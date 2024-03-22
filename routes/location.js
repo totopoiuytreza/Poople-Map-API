@@ -1,12 +1,14 @@
 var express = require('express');
-var auth = require('../services/location.service.js');
+var location = require('../services/location.service.js');
 var router = express.Router();
 
-router.get('/getLocations', auth.getLocations);
+router.post('/addLocation', location.addLocation);
 
-router.get('/getLocation/:id_location', auth.getLocation);
+router.get('/getLocations', location.getLocations);
 
-router.patch('/patchLocation/:id_location', auth.patchLocation);
+router.get('/getLocation/:id_location', location.getLocation);
+
+router.patch('/patchLocation/:id_location', location.patchLocation);
 
 
 module.exports = router;

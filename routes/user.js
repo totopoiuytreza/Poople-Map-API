@@ -4,7 +4,7 @@ var router = express.Router();
 
 
 router.get('/getUser', user.getUser);
-router.patch('/updateUser', user.patchUser);
+router.patch('/patchUser', user.patchUser);
 
 
 module.exports = router;

@@ -1,9 +1,10 @@
 const Sequelize = require("../db.connection.js");
 const Crypto = require("crypto");
 
-const sessions = require("../controllers/session.js");
+const sessions = require("./session.service.js");
 
 const User = require("../models/user.model.js")(Sequelize.connection, Sequelize.library);
+const Session = require("../models/session.model.js")(Sequelize.connection, Sequelize.library);
 
 
 exports.loginUser = async(req, res) => {
@@ -11,13 +12,13 @@ exports.loginUser = async(req, res) => {
     let user = await User.findOne({where: {username: req.body.username}});
 
     if(user && user.id_user && 
-        user.password == Crypto.createHash('sha256').update(req.body.password).digest('hex') && user.account_status){
+        user.password == Crypto.createHash('sha256').update(req.body.password).digest('hex')){
         
         // Find if user already has a session
         let session = await Session.findOne({where: {id_user: user.id_user}});
 
         // If user has a session, check if it is still valid
-        let isTokenExpired = session ? (new Date(session.valid_until) - new Date() <= 0) : true;
+        let isTokenExpired = session ? (new Date(session.validUntil) - new Date() <= 0) : true;
         var token = "";
 
         // If user has a session and it is still valid
@@ -59,7 +60,7 @@ exports.registerUser = async(req, res) => {
     let session = await sessions.createSession(newUser.id_user, "user");
 
     // Send confirmation mail
-    mail.sendConfirmationMail(newUser.email, newUser.nom, session.token);
+    //mail.sendConfirmationMail(newUser.email, newUser.nom, session.token);
 
     res.status(200).send({id_user: newUser.id_user});
 }   
@@ -80,7 +81,7 @@ exports.verifyUser = async(req, res) => {
             return;
         }
         // If token exists, check if it is still valid
-        let isTokenExpired = session ? (new Date(session.valid_until) - new Date() <= 0) : true;
+        let isTokenExpired = session ? (new Date(session.validUntil) - new Date() <= 0) : true;
 
         // If token is valid, verify user account
         if(session && !isTokenExpired){
