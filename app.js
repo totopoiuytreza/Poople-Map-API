@@ -8,7 +8,7 @@ require('dotenv').config();
 
 
 /* Initialize all router */
-var indexRouter = require('./routes/index');
+var indexRouter = require('./routes/auth');
 
 var app = express();
 
@@ -68,8 +68,8 @@ Session.sync({ force: false, alter: true });
 Location.sync({force: false}, {alter: true});
 Rating.sync({ force: false, alter: true });
 
-Rating.belongsTo(Location, {as: "location", foreignKey: "id_location", onDelete: 'cascade'});
-Location.belongsTo(User, {as: "user", foreignKey: "id_user", onDelete: 'cascade'});
-Session.belongsTo(User, {as: "user", foreignKey: "id_user", onDelete: 'cascade'});
+Rating.belongsTo(Location, {as: "locations", foreignKey: "id_location", onDelete: 'cascade'});
+Location.belongsTo(User, {as: "users", foreignKey: "id_user", onDelete: 'cascade'});
+Session.belongsTo(User, {as: "users", foreignKey: "id_user", onDelete: 'cascade'});
 
 module.exports = app;
