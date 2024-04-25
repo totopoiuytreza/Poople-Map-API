@@ -29,8 +29,8 @@ app.use(cors({
   origin: '*'
 }));
 
-app.listen(3001, () => {
-  console.log("Example app listening at port 3001!");
+app.listen(3000, () => {
+  console.log("Example app listening at port 3000!");
 
 })
 
