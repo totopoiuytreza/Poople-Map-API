@@ -6,7 +6,7 @@ const Sequelize = require("../db.connection");
 const Session = require("../models/session.model")(Sequelize.connection, Sequelize.library);
 
 // Create a new Session
-exports.createSession = async (id, userType) => {
+exports.createSession = async (id) => {
 
     let validity = moment().add(1, 'days').format()
     const obj = {
@@ -69,7 +69,7 @@ exports.deleteExpiredToken = async () => {
     .then(data => {
         console.log(data)
         for(var i=0; i<data.length; i++){
-            SessionClient.destroy({where: {id_sessionclient: data[i].id_sessionclient}})
+            Session.destroy({where: {id_session: data[i].id_session}})
         }
     })
 }
